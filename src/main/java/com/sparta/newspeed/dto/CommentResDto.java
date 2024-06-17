@@ -27,7 +27,7 @@ public class CommentResDto {
     private int likesCount;
 
     public CommentResDto(Comment comment) {
-        this.nickname = comment.getUser().getNickname();
+        this.nickname = comment.getUser().getEmail();
         this.PeedId = comment.getPeed().getId();
         this.content = comment.getContent();
         this.createdAt = comment.getCreatedAt();

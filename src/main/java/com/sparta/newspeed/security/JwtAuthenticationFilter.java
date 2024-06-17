@@ -2,9 +2,7 @@ package com.sparta.newspeed.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.newspeed.dto.UserServiceReqDto;
-import com.sparta.newspeed.entity.User;
 import com.sparta.newspeed.entity.UserStatusEnum;
-import com.sparta.newspeed.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -39,7 +37,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             return getAuthenticationManager().authenticate( // 인증객체 만들기.
                     new UsernamePasswordAuthenticationToken(
-                            UserServiceReqDto.getNickname(),
+                            UserServiceReqDto.getEmail(),
                             UserServiceReqDto.getPassword(),
                             null //토큰을 만들어서 메서드 호출하고 ㅇ씨는 형태
                             //authenticate를 활용하면
@@ -55,10 +53,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("로그인 성공 및 JWT 생성");
-        String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
+        String email = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getEmail();
         UserStatusEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getUserStatus();
 //
-        String accessToken = jwtUtil.createAccessToken(username, role);
+        String accessToken = jwtUtil.createAccessToken(email, role);
         String refreshToken = jwtUtil.createRefreshToken();
 
         jwtUtil.addAccessJwtToHeader(accessToken, response);

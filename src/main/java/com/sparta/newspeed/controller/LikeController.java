@@ -23,7 +23,6 @@ public class LikeController {
     public ResponseEntity<String> likeFeed (@PathVariable Long peedsId,
                                               @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return likeService.likeFeed(peedsId, userDetailsImpl);
-
     }
 
     @PutMapping("/{peedsId}/comments/{commentId}/likes")
@@ -31,7 +30,6 @@ public class LikeController {
                                               @PathVariable Long commentId,
                                               @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
         return likeService.likeComment(commentId, userDetailsImpl);
-
     }
 
 }

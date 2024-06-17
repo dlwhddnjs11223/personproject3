@@ -37,15 +37,18 @@ public class PeedController {
             @RequestParam("sortBy") String sortBy,
             @RequestParam("isAsc") boolean isAsc
 
-    ){
-        return peedService.getAllPeeds(page-1, size, sortBy, isAsc);
+    ) {
+        return peedService.getAllPeeds(page - 1, size, sortBy, isAsc);
     }
 
     @Operation(summary = "피드 수정", description = "피드를 수정합니다.")
     @PutMapping("/peeds/{id}")
-    public PeedResponseDto updateMemo(@PathVariable Long id, @RequestBody PeedRequestDto requestDto) {
-        return peedService.updatePeed(id, requestDto);
+    public PeedResponseDto updateMemo(@PathVariable Long id,
+                                      @RequestBody PeedRequestDto requestDto,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        return peedService.updatePeed(id, requestDto, userDetailsImpl.getUser());
     }
+
     @Operation(summary = "피드 삭제", description = "피드를 삭제합니다.")
     @DeleteMapping("/peeds/{id}")
     public Long deleteMemo(@PathVariable Long id, @RequestBody PeedRequestDto requestDto) {

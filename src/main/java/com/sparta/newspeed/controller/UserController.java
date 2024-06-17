@@ -1,10 +1,11 @@
 package com.sparta.newspeed.controller;
 
 import com.sparta.newspeed.dto.SignupReqDto;
+import com.sparta.newspeed.dto.UserReqDto;
 import com.sparta.newspeed.dto.UserServiceReqDto;
 import com.sparta.newspeed.dto.WithdrawReqDto;
+import com.sparta.newspeed.email.EmailService;
 import com.sparta.newspeed.security.UserDetailsImpl;
-import com.sparta.newspeed.service.EmailService;
 import com.sparta.newspeed.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,11 +31,12 @@ public class UserController {
     private final UserService userService;
     private final EmailService emailService;
 
+
     @Operation(summary = "회원가입", description = "회원가입을 수행합니다.")
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@Valid @RequestBody SignupReqDto signupRequestDto) throws MessagingException, UnsupportedEncodingException {
         String signupMessage = userService.signup(signupRequestDto);
-        emailService.sendEmail(signupRequestDto.getEmail());
+
         return new ResponseEntity<>(signupMessage, HttpStatus.OK);
     } //회원 가입
 
@@ -60,6 +62,13 @@ public class UserController {
                                          @Parameter(hidden = true) UserDetailsImpl userDetailsImpl) {
         userService.logout(req, userDetailsImpl);
         return new ResponseEntity<>("로그아웃 완료", HttpStatus.OK);
+    } // 로그아웃
+
+    @PostMapping("/email")
+    public String verifyEmail(@RequestBody UserReqDto userReqDto,
+                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return  emailService.checkCode(userReqDto, userDetails);
+
     } // 로그아웃
 
 

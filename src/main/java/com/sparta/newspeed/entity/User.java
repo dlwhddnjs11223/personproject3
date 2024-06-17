@@ -2,13 +2,13 @@ package com.sparta.newspeed.entity;
 
 import com.sparta.newspeed.Timestamped;
 import com.sparta.newspeed.dto.SignupReqDto;
-import com.sparta.newspeed.dto.UserReqDto;
-import com.sparta.newspeed.like.Likes;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +30,9 @@ public class User extends Timestamped {
     private String username; // 사용자 이름
     @Column(nullable = false)
     private String email; // 사용자 이메일
+    @Column(nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime departureTime = null;
     @Column(nullable = false)
     private String introduce; // 한줄소개
     @Column(nullable = false)
@@ -47,19 +50,24 @@ public class User extends Timestamped {
     @OneToMany(mappedBy="user")
     private List<Likes> likesList = new ArrayList<>();
 
-
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
     public User(SignupReqDto requestDto) {
         this.nickname = requestDto.getNickname();
         this.password = requestDto.getPassword();
         this.username = requestDto.getUsername();
         this.email = requestDto.getEmail();
         this.introduce =requestDto.getIntroduce();
-        this.userStatus = UserStatusEnum.NORMAL;
+        this.userStatus = UserStatusEnum.NOTVERIFIED;
+        this.departureTime = LocalDateTime.now();
+    }
+
+    public User(String nickname, String password, String username, String email, String introduce, UserStatusEnum userStatus) {
+      this.nickname = nickname;
+      this.password = password;
+      this.username = username;
+      this.email = email;
+      this.introduce = introduce;
+      this.userStatus = userStatus;
+
     }
 
     public void withdraw() {

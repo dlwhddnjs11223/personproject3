@@ -15,8 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class PeedService {
     private final PeedRepository peedRepository;
@@ -28,18 +26,22 @@ public class PeedService {
     }
 
     public PeedResponseDto createPeed(PeedRequestDto requestDto, UserDetailsImpl userDetailsImpl) {
-        String nickname = userDetailsImpl.getUser().getNickname();
-        User user = userService.findUserByNickname(nickname);
+        String email = userDetailsImpl.getUser().getEmail();
+        User user = userService.findUserByEmail(email);
 
         Peed peed = new Peed(requestDto, user);
-        Peed savepeed = peedRepository.save(peed);
-        return new PeedResponseDto(savepeed);
+        peedRepository.save(peed);
+        return new PeedResponseDto(peed);
 
     }
 
     @Transactional
-    public PeedResponseDto updatePeed(Long id, PeedRequestDto requestDto) {
+    public PeedResponseDto updatePeed(Long id, PeedRequestDto requestDto, User user) {
+
         Peed peed = findPeed(id);
+        if(!peed.getUser().getId().equals(user.getId())){
+            throw new IllegalArgumentException("사용자가 일치하지 않습니다.");
+        }
         // 작성자만 수정 삭제 가능하게 예외처리
         peed.update(requestDto);
         return new PeedResponseDto(peed);

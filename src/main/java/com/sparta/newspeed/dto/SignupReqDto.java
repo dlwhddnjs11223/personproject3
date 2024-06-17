@@ -4,12 +4,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Schema(description = "회원가입 요청 DTO")
+@AllArgsConstructor
 public class SignupReqDto {
     @Schema(description = "사용자 ID", example = "nickname123")
     @NotBlank(message = "nickname은 필수입니다.")

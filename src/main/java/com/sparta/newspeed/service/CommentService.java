@@ -21,7 +21,7 @@ public class CommentService {
 
 
     public void addComment(Long newspeedId, CommentReqDto commentReqDto, UserDetailsImpl userDetails) {
-        User user = userService.findUserByNickname(userDetails.getUser().getNickname());
+        User user = userService.findUserByEmail(userDetails.getUser().getEmail());
         Peed peed = peedService.findPeed(newspeedId);
         Comment comment = new Comment(commentReqDto, user, peed);
 

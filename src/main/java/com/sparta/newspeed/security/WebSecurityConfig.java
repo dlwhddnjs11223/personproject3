@@ -83,7 +83,7 @@ public class WebSecurityConfig {
 //                                .requestMatchers("/user/**").permitAll()
                                 .requestMatchers("/user/login").permitAll()
                                 .requestMatchers("/user/signup").permitAll() // 인증이 필요 없다, 토큰이 없어도 된다.
-                                .requestMatchers(HttpMethod.GET,"/peeds/**").permitAll()// '/api/user/'로 시작하는 요청 모두 접근 허가
+                                .requestMatchers(HttpMethod.GET, "/peeds/**").permitAll()// '/api/user/'로 시작하는 요청 모두 접근 허가
                                 .requestMatchers("/error").permitAll()
                                 .anyRequest().authenticated()
 

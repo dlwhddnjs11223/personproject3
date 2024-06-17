@@ -72,10 +72,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     }
                     log.info("DB 기존 리프레쉬 토큰" + issuedRefreshToken.getRefreshToken());
                     User user = issuedRefreshToken.getUser();
-                    String userId = user.getNickname();
+                    String email = user.getEmail();
                     UserStatusEnum status = user.getUserStatus();
 
-                    accesstoken = jwtUtil.createAccessToken(userId, status);
+                    accesstoken = jwtUtil.createAccessToken(email, status);
                     refreshToken = refreshTokenService.updateRefreshToken(issuedRefreshToken);
                     log.info("DB 새로운 리프레쉬 토큰" + issuedRefreshToken.getRefreshToken());
 

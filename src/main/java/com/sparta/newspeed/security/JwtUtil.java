@@ -61,12 +61,12 @@ public class JwtUtil {
     }
     // JWT 생성
 
-    public String createAccessToken(String username, UserStatusEnum status) {
+    public String createAccessToken(String email, UserStatusEnum status) {
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(username) // 사용자 식별자값(ID)
+                        .setSubject(email) // 사용자 식별자값(ID)
                         .claim(AUTHORIZATION_KEY, status) // 사용자 권한
                         .setExpiration(new Date(date.getTime() + ACCESSTOKEN_TIME)) // 만료 시간
                         .setIssuedAt(date) // 발급일
