@@ -77,7 +77,7 @@ public class UserService {
         }
     } // 회원 탈퇴
 
-    public void login(UserServiceReqDto userServiceDto, HttpServletResponse res) {
+    public HttpServletResponse login(UserServiceReqDto userServiceDto, HttpServletResponse res) {
         User user = findUserByEmail(userServiceDto.getEmail());
 
         if (checkUserId(user, userServiceDto)) {
@@ -86,7 +86,10 @@ public class UserService {
 
             jwtUtil.addAccessJwtToHeader(accessToken, res);
             jwtUtil.addRefreshJwtToHeader(refreshToken, res);
+
+
         }
+        return res;
     }
 
     @Transactional

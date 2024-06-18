@@ -3,6 +3,7 @@ package com.sparta.newspeed.entity;
 import com.sparta.newspeed.Timestamped;
 import com.sparta.newspeed.dto.SignupReqDto;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -60,6 +61,7 @@ public class User extends Timestamped {
         this.departureTime = LocalDateTime.now();
     }
 
+    @Builder
     public User(String nickname, String password, String username, String email, String introduce, UserStatusEnum userStatus) {
       this.nickname = nickname;
       this.password = password;
@@ -73,6 +75,8 @@ public class User extends Timestamped {
     public void withdraw() {
         this.userStatus = UserStatusEnum.WITHDREW;
     }
+
+
 
 
 }

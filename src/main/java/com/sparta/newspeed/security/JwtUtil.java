@@ -87,7 +87,7 @@ public class JwtUtil {
 
     }
 
-    public void addAccessJwtToHeader(String token, HttpServletResponse res) {
+    public HttpServletResponse addAccessJwtToHeader(String token, HttpServletResponse res) {
         try {
             token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20"); // Cookie Value 에는 공백이 불가능해서 encoding 진행
 
@@ -95,6 +95,7 @@ public class JwtUtil {
         } catch (UnsupportedEncodingException e) {
             logger.error(e.getMessage());
         }
+        return res;
     }
 
 
@@ -140,10 +141,12 @@ public class JwtUtil {
             return true;
         } catch (SecurityException | MalformedJwtException | SignatureException | ExpiredJwtException |
                  UnsupportedJwtException | IllegalArgumentException e) {
-            log.error("액세스 토큰 : Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+
+            throw new IllegalArgumentException("비정상 토큰임") ;
+
+
         }
 
-        return false;
 
     }
 

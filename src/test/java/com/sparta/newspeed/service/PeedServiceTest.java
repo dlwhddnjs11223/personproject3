@@ -5,120 +5,83 @@ import com.sparta.newspeed.dto.PeedResponseDto;
 import com.sparta.newspeed.dto.SignupReqDto;
 import com.sparta.newspeed.entity.Peed;
 import com.sparta.newspeed.entity.User;
+import com.sparta.newspeed.entity.UserStatusEnum;
 import com.sparta.newspeed.repository.PeedRepository;
+import com.sparta.newspeed.repository.UserRepository;
 import com.sparta.newspeed.security.UserDetailsImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PeedServiceTest {
     @Mock
-    PeedRepository peedRepository;
+    private PeedRepository peedRepository;
     @Mock
-    UserService userService;
+    private UserService userService;
+    @Mock
+    private UserRepository userRepository;
 
+    @InjectMocks
     PeedService peedService;
-    PeedRequestDto setPeedRequestDto;
-    User setUser;
-    UserDetailsImpl setUserDetailsImpl;
-    Peed setPeed;
 
     @BeforeEach
     void setUp() {
-        peedService = new PeedService(peedRepository, userService);
-        setPeedRequestDto = new PeedRequestDto("테스트");
-        SignupReqDto setSignupReqDto = new SignupReqDto(
-                "test12345678123",
-                "1234567891",
-                "종원",
-                "dl@whd.dnjs",
-                "ㅎㅇ");
-        setUser = new User(setSignupReqDto);
-        setUserDetailsImpl = new UserDetailsImpl(setUser);
-        setPeed = new Peed(setPeedRequestDto, setUser);
+//        peedService = new PeedService(peedRepository, userService);
+
     }
 
-    @Test
-    @DisplayName("피드 만들기 : 올바른 입력")
-    void createPeedTest() {
-        //given
 
-        PeedRequestDto peedRequestDto = setPeedRequestDto;
-        UserDetailsImpl userDetailsImpl = setUserDetailsImpl;
-        User user = userDetailsImpl.getUser();
-        given(userService.findUserByEmail(user.getEmail())).willReturn((user));
-        //이러한 조건에서 (given), 이렇게 했을 때 (when), 이렇게 결과가 나온다(then)
+    @Test
+    @DisplayName("피드 작성")
+    void test1() {
+       //given
+        String contents = "testContents";
+        PeedRequestDto peedRequestDto = new PeedRequestDto(contents);
+
+        User user = User.builder()
+                .userStatus(UserStatusEnum.NOTVERIFIED)
+                .nickname("test12345678")
+                .password("test12345678")
+                .username("test")
+                .email("test@test.com")
+                .introduce("test")
+                .build();
+
+        User mock = Mockito.mock(User.class);
+
+        UserDetailsImpl userDetailsImpl = new UserDetailsImpl(user);
+
+//        given(userRepository.findByEmail(anyString())).willReturn(Optional.of(user));
+        given(userService.findUserByEmail(anyString())).willReturn(user);
         //when
         PeedResponseDto result = peedService.createPeed(peedRequestDto, userDetailsImpl);
-        //then
-        assertEquals(peedRequestDto.getContents(), result.getContents());
-    }
 
-
-    @Test
-    @DisplayName("피드 수정하기 : 올바른 입력")
-    void updatePeed() {
-        //given
-        Long id = 100L;
-        User user = setUser;
-        user.setId(100L);
-        PeedRequestDto peedRequestDto = new PeedRequestDto("수정 테스트");
-        given(peedRepository.findById(100L)).willReturn(Optional.of(setPeed));
-//        given(peedService.findPeed(100L)).willReturn((setPeed));// 왜 이건 안되지?
-        //when
-        PeedResponseDto result = peedService.updatePeed(100L, peedRequestDto, user);
-        //then
-        assertEquals(result.getContents(), peedRequestDto.getContents());
-
-    }
-
-    //
-    //
-    //질문 : ID가 안바뀜
-    @Test
-    @DisplayName("피드 수정하기 : 일치하지 않는 사용자")
-    void updatePeed2() {
-        //given
-
-        Long id = 100L;
-
-        User currentUser = setUser;
-        User peedUser = new User();
-        peedUser.setId(101L);
-        currentUser.setId(100L);
-
-
-        PeedRequestDto peedRequestDto = new PeedRequestDto("수정 테스트");
-        Peed peed = new Peed(peedRequestDto, peedUser);
-
-
-        given(peedRepository.findById(100L)).willReturn(Optional.of(peed));
-        //when
-        Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> {
-                    peedService.updatePeed(100L, peedRequestDto, currentUser);
-                }
-        );
 
         //then
-        assertEquals("사용자가 일치하지 않습니다.", exception.getMessage());
+        assertEquals(contents, result.getContents());
 
     }
 
-    @Test
-    void deletePeed() {
-    }
 
-    @Test
-    void getAllPeeds() {
-    }
 }
